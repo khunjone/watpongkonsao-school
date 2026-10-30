@@ -7,7 +7,7 @@
 
 // ── การตั้งค่าระบบ ──
 const CONFIG = {
-    API_URL: localStorage.getItem('SCHOOL_API_URL') || '',
+    API_URL: localStorage.getItem('SCHOOL_API_URL') || 'https://script.google.com/macros/s/AKfycbx4IOmowvFW89caiXKU4_2aHofuyW5FJwkuziRTNlvjduEt93sPug4IXXOSMt6K2jcbyg/exec',
     CACHE_KEY: 'SCHOOL_LOCAL_CACHE_V1'
 };
 
