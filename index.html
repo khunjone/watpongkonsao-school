@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โรงเรียนวัดโป่งก้อนเส้า - Watpongkonsao School</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Mitr:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <div class="topbar-left">
+                <span id="topbar-address">📍 หมู่ 5 บ้านโป่งก้อนเส้า ตำบลท่ามะปราง อำเภอแก่งคอย จังหวัดสระบุรี</span>
+                <span id="topbar-phone">📞 036-xxx-xxx</span>
+                <span id="topbar-email">✉️ watpongkonsao@gmail.com</span>
+            </div>
+            <div class="topbar-right">
+                <a href="#" title="Facebook" id="link-facebook" target="_blank">f</a>
+                <a href="#" title="YouTube" id="link-youtube" target="_blank">▶</a>
+                <a href="#" title="Instagram" id="link-instagram" target="_blank">◉</a>
+                <a class="topbar-login" href="admin.html">🔐 จัดการระบบ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-inner">
+            <a class="logo" href="index.html">
+                <div class="logo-icon" id="logo-abbr">ป.ก.</div>
+                <div class="logo-text">
+                    <strong id="school-title">โรงเรียนวัดโป่งก้อนเส้า</strong>
+                    <span id="school-motto">Watpongkonsao School · เรียนดี มีวินัย ใส่ใจสิ่งแวดล้อม</span>
+                </div>
+            </a>
+            <div class="search-wrapper">
+                <div class="search-bar">
+                    <input type="text" id="site-search-input" placeholder="ค้นหาข่าวสาร, บุคลากร...">
+                    <button type="button">🔍</button>
+                </div>
+                <div class="search-dropdown" id="search-dropdown"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="active">🏠 หน้าแรก</a>
+            <a href="#featured-section">ข่าวสารและประกาศ</a>
+            <a href="#gallery-section">ภาพกิจกรรม</a>
+            <a href="#staff-section">บุคลากร</a>
+            <a href="#contact-section">ติดต่อเรา</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-dots"></div>
+        <div class="hero-content">
+            <div class="hero-badge" id="hero-badge">🏫 ยินดีต้อนรับสู่เว็บไซต์โรงเรียน</div>
+            <h1 id="hero-title">ยินดีต้อนรับสู่<br>โรงเรียนวัดโป่งก้อนเส้า</h1>
+            <p id="hero-subtitle">Watpongkonsao School · เรียนดี มีวินัย ใส่ใจสิ่งแวดล้อม</p>
+            <div class="hero-btns">
+                <a class="btn-gold" id="hero-btn1" href="#featured-section">ติดตามข่าวสาร →</a>
+                <a class="btn-outline" id="hero-btn2" href="#footer-contact-info">ติดต่อโรงเรียน</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+        <div class="stats-inner" id="stats-grid">
+            <div class="stat-item">
+                <div class="stat-icon">👨‍🎓</div>
+                <div class="stat-num">-</div>
+                <div class="stat-label">นักเรียน</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">📚</div>
+                <div class="stat-num">-</div>
+                <div class="stat-label">กลุ่มสาระ</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">🚪</div>
+                <div class="stat-num">-</div>
+                <div class="stat-label">ห้องเรียน</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">👩‍🏫</div>
+                <div class="stat-num">-</div>
+                <div class="stat-label">บุคลากร</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK ACCESS -->
+    <section class="quick-access">
+        <div class="quick-inner">
+            <div class="quick-grid" id="quick-grid">
+                <!-- ทางลัดบริการด่วนจะถูกเรนเดอร์โดย app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED NEWS -->
+    <section class="section" id="featured-section">
+        <div class="section-inner">
+            <div class="section-title"><span class="dot"></span>ข่าวสำคัญปักหมุด</div>
+            <p class="section-subtitle">ข่าวสารที่ควรรู้และติดตามอย่างเร่งด่วน</p>
+            <div id="featured-card-wrapper">
+                <!-- ข่าวปักหมุดจะถูกเรนเดอร์โดย app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- NEWS GRID -->
+    <section class="section section-alt" id="news-section">
+        <div class="section-inner">
+            <div class="section-title"><span class="dot"></span>ข่าวสารและประชาสัมพันธ์ล่าสุด</div>
+            <p class="section-subtitle">ติดตามข่าวสารความเคลื่อนไหวล่าสุดของโรงเรียน</p>
+            <div class="news-grid" id="news-grid">
+                <!-- รายการข่าวจะถูกเรนเดอร์โดย app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="section" id="gallery-section">
+        <div class="section-inner">
+            <div class="section-title"><span class="dot"></span>ภาพกิจกรรมเด่น</div>
+            <p class="section-subtitle">บันทึกความทรงจำจากกิจกรรมของโรงเรียน</p>
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- ภาพกิจกรรมจะถูกเรนเดอร์โดย app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- STAFF -->
+    <section class="section section-alt" id="staff-section">
+        <div class="section-inner">
+            <div class="section-title"><span class="dot"></span>ผู้บริหารและบุคลากร</div>
+            <p class="section-subtitle">ทีมงานผู้ทุ่มเทเพื่อการศึกษาของนักเรียน</p>
+            <div class="staff-grid" id="staff-grid">
+                <!-- บุคลากรจะถูกเรนเดอร์โดย app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT FORM -->
+    <section class="section" id="contact-section">
+        <div class="section-inner">
+            <div class="section-title"><span class="dot"></span>ติดต่อเรา</div>
+            <p class="section-subtitle">ส่งข้อความถึงโรงเรียน เราพร้อมตอบกลับท่านโดยเร็วที่สุด</p>
+            <div class="contact-form-card">
+                <form id="contact-form" onsubmit="submitContactForm(event)">
+                    <div class="contact-form-grid">
+                        <div class="form-field">
+                            <label for="contact-name">ชื่อ-นามสกุล <span class="req">*</span></label>
+                            <input type="text" id="contact-name" placeholder="เช่น นายสมชาย ใจดี" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="contact-email">อีเมล <span class="req">*</span></label>
+                            <input type="email" id="contact-email" placeholder="example@email.com" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="contact-phone">เบอร์โทรศัพท์</label>
+                            <input type="tel" id="contact-phone" placeholder="081-234-5678">
+                        </div>
+                        <div class="form-field">
+                            <label for="contact-subject">หัวข้อเรื่อง <span class="req">*</span></label>
+                            <input type="text" id="contact-subject" placeholder="เช่น สอบถามเรื่องการรับสมัคร" required>
+                        </div>
+                    </div>
+                    <div class="form-field form-field-full">
+                        <label for="contact-message">ข้อความ <span class="req">*</span></label>
+                        <textarea id="contact-message" rows="4" placeholder="พิมพ์ข้อความของท่านที่นี่..."
+                            required></textarea>
+                    </div>
+                    <div class="contact-form-actions">
+                        <button type="submit" class="btn-gold" id="btn-submit-contact">📨 ส่งข้อความ</button>
+                    </div>
+                </form>
+                <div class="contact-success" id="contact-success" style="display:none;">
+                    <div class="success-icon">✅</div>
+                    <h4>ส่งข้อความเรียบร้อยแล้ว!</h4>
+                    <p>ขอบคุณที่ติดต่อมา ทางโรงเรียนจะตอบกลับท่านโดยเร็วที่สุด</p>
+                    <button type="button" class="btn-outline" onclick="resetContactForm()">ส่งข้อความอีกครั้ง</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-main">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo" style="margin-bottom:14px">
+                        <div class="logo-icon">ป.ก.</div>
+                        <div class="logo-text footer-brand">
+                            <strong style="color:white;font-family:'Mitr',sans-serif;font-size:17px"
+                                id="footer-school-name">โรงเรียนวัดโป่งก้อนเส้า</strong>
+                            <span style="font-size:12px;color:rgba(255,255,255,.5)"
+                                id="footer-school-motto">Watpongkonsao School · เรียนดี มีวินัย ใส่ใจสิ่งแวดล้อม</span>
+                        </div>
+                    </div>
+                    <p class="footer-desc">มุ่งมั่นพัฒนาผู้เรียนให้มีคุณภาพ คุณธรรม จริยธรรม
+                        และทักษะที่จำเป็นสำหรับศตวรรษที่ 21</p>
+                    <div class="footer-socials">
+                        <a href="#" title="Facebook">f</a>
+                        <a href="#" title="YouTube">▶</a>
+                        <a href="#" title="Instagram">◉</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>ลิงก์ด่วน</h4>
+                    <ul>
+                        <li><a href="index.html">หน้าแรก</a></li>
+                        <li><a href="#featured-section">ข่าวสารปักหมุด</a></li>
+                        <li><a href="#news-section">ข่าวสารล่าสุด</a></li>
+                        <li><a href="#gallery-section">ภาพกิจกรรม</a></li>
+                        <li><a href="#staff-section">บุคลากร</a></li>
+                        <li><a href="admin.html">ระบบจัดการหลังบ้าน</a></li>
+                    </ul>
+                </div>
+                <!-- รอฟีเจอร์ใหม่
+                <div class="footer-col">
+                    <h4>สำหรับผู้ปกครอง</h4>
+                    <ul>
+                        <li><a href="#footer-contact-info">สมัครเรียน</a></li>
+                        <li><a href="#footer-contact-info">ติดต่อฝ่ายธุรการ</a></li>
+                        <li><a href="#news-section">ปฏิทินการศึกษา</a></li>
+                        <li><a href="#footer-contact-info">ข้อมูลการติดต่อ</a></li>
+                    </ul>
+                </div>
+                -->
+                <div class="footer-col">
+                    <h4>ติดต่อเรา</h4>
+                    <div class="footer-contact" id="footer-contact-info">
+                        <span>📍 หมู่ 5 บ้านโป่งก้อนเส้า ตำบลท่ามะปราง อำเภอแก่งคอย จังหวัดสระบุรี</span>
+                        <span>📞 036-xxx-xxx</span>
+                        <span>✉️ watpongkonsao@gmail.com</span>
+                        <span>🕐 จ.-ศ. 08.00–16.30 น.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom" id="footer-copyright">
+            © 2569 โรงเรียนวัดโป่งก้อนเส้า · พัฒนาโดย Khunjone V.1 · สงวนลิขสิทธิ์ทุกประการ
+        </div>
+    </footer>
+
+    <!-- ── MODAL: ข่าวสารฉบับเต็ม ── -->
+    <div class="modal-overlay" id="news-modal" onclick="if(event.target===this) closeNewsModal()">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modal-news-title">หัวข้อข่าว</h3>
+                <button class="modal-close" onclick="closeNewsModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-news-img-wrap"></div>
+                <div class="modal-news-meta" id="modal-news-meta"></div>
+                <div class="modal-news-content" id="modal-news-body"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

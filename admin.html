@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการหลังบ้าน - โรงเรียนวัดโป่งก้อนเส้า</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Mitr:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <script src="admin.js" defer></script>
+</head>
+
+<body>
+
+    <!-- ── AUTH LOGIN OVERLAY (แสดงเมื่อยังไม่ได้ยืนยันตัวตน) ── -->
+    <div class="auth-overlay" id="auth-screen">
+        <div class="auth-card">
+            <div class="auth-icon">ป.ก.</div>
+            <h2>ระบบจัดการหลังบ้าน</h2>
+            <p>โรงเรียนวัดโป่งก้อนเส้า (Watpongkonsao School)</p>
+            <div class="form-group" style="text-align: left;">
+                <label>รหัสผ่าน PIN ผู้ดูแลระบบ (Default: admin1234)</label>
+                <input type="password" id="login-pin-input" placeholder="กรอกรหัสผ่าน 4-8 หลัก..."
+                    onkeydown="if(event.key==='Enter') verifyAdminLogin()">
+            </div>
+            <button class="btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;"
+                onclick="verifyAdminLogin()">เข้าสู่ระบบ</button>
+            <a href="index.html"
+                style="display: block; margin-top: 18px; font-size: 13px; color: var(--gray-500); text-decoration: none;">←
+                กลับสู่หน้าแรกของเว็บไซต์</a>
+        </div>
+    </div>
+
+    <!-- ── SIDEBAR NAVIGATION ── -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">ป.ก.</div>
+            <div class="brand-info">
+                <strong>วัดโป่งก้อนเส้า</strong>
+                <span>Admin Dashboard V.1</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-group-title">ภาพรวม</div>
+            <button class="nav-link active" onclick="navigateTab('overview', this)">📊 หน้าภาพรวมระบบ</button>
+
+            <div class="nav-group-title">จัดการหน้าแรก</div>
+            <button class="nav-link" onclick="navigateTab('settings', this)">🏫 ข้อมูลโรงเรียน (Settings)</button>
+            <button class="nav-link" onclick="navigateTab('hero', this)">🖼️ แบนเนอร์หลัก (Hero)</button>
+            <button class="nav-link" onclick="navigateTab('stats', this)">📈 สถิติสำคัญ (Stats)</button>
+            <button class="nav-link" onclick="navigateTab('quick', this)">⚡ ทางลัดด่วน (Quick Links)</button>
+
+            <div class="nav-group-title">จัดการข้อมูลเนื้อหา</div>
+            <button class="nav-link" onclick="navigateTab('news', this)">📰 ข่าวสารและประกาศ</button>
+            <button class="nav-link" onclick="navigateTab('gallery', this)">📸 ภาพกิจกรรม (Gallery)</button>
+            <button class="nav-link" onclick="navigateTab('staff', this)">👥 ทำเนียบบุคลากร (Staff)</button>
+            <button class="nav-link" onclick="navigateTab('contact', this)">✉️ ข้อความติดต่อ (Inquiries)</button>
+
+            <div class="nav-group-title">ระบบและฐานข้อมูล</div>
+            <button class="nav-link" onclick="navigateTab('facebook', this)">🔄 ซิงค์ข้อมูล Facebook</button>
+            <button class="nav-link" onclick="navigateTab('api', this)">⚙️ Google Apps Script API</button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="index.html" class="nav-link" target="_blank" style="background: rgba(255,255,255,0.06);">🌐
+                เปิดดูหน้าเว็บไซต์จริง</a>
+            <button class="nav-link" onclick="adminLogout()" style="color: #fca5a5;">🚪 ออกจากระบบ</button>
+        </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT WRAPPER ── -->
+    <main class="main-wrapper">
+        <!-- TOP NAV -->
+        <header class="top-nav">
+            <h2 class="page-title" id="current-page-title">📊 หน้าภาพรวมระบบ</h2>
+            <div class="top-nav-right">
+                <div id="top-api-status" class="status-pill pill-offline">🟡 โหมดจำลองในเบราว์เซอร์</div>
+                <button class="btn-primary" onclick="syncDataWithBackend()">🔄 ดึงข้อมูลล่าสุด</button>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <div class="content-area">
+
+            <!-- ── TAB 1: OVERVIEW ── -->
+            <section class="tab-pane" id="pane-overview">
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div class="metric-icon">📰</div>
+                        <div class="metric-info">
+                            <strong id="metric-news-count">0</strong>
+                            <span>ข่าวสารทั้งหมด</span>
+                        </div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-icon">📸</div>
+                        <div class="metric-info">
+                            <strong id="metric-gallery-count">0</strong>
+                            <span>ภาพกิจกรรม</span>
+                        </div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-icon">👥</div>
+                        <div class="metric-info">
+                            <strong id="metric-staff-count">0</strong>
+                            <span>บุคลากร</span>
+                        </div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-icon">✉️</div>
+                        <div class="metric-info">
+                            <strong id="metric-contact-count">0</strong>
+                            <span>ข้อความติดต่อ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>🟢 การเชื่อมต่อฐานข้อมูล Google Spreadsheet</h3>
+                    </div>
+                    <p style="font-size: 14px; line-height: 1.7; color: var(--gray-700); margin-bottom: 16px;">
+                        ระบบหลังบ้านนี้เชื่อมต่อกับ <strong>Google Spreadsheet (10 ตาราง)</strong> และ <strong>Google
+                            Drive</strong> ผ่าน Google Apps Script Controller
+                        เมื่อคุณอัปเดตข้อมูลหรืออัปโหลดรูปภาพผ่านหน้านี้ ระบบจะส่งคำขอไปอัปเดตชีตและบันทึกไฟล์ลง Drive
+                        ให้ทันที
+                    </p>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="btn-primary" onclick="navigateTab('news')">➕ เขียนข่าวประชาสัมพันธ์ใหม่</button>
+                        <button class="btn-secondary" onclick="navigateTab('settings')">✏️ แก้ไขข้อมูลโรงเรียน</button>
+                        <button class="btn-secondary" onclick="navigateTab('api')">⚙️ ตั้งค่า Apps Script URL</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 2: SITE SETTINGS ── -->
+            <section class="tab-pane" id="pane-settings" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>🏫 ข้อมูลทั่วไปของโรงเรียน (Site Settings)</h3>
+                        <button class="btn-gold" onclick="saveSiteSettings()">💾 บันทึกข้อมูลโรงเรียน</button>
+                    </div>
+                    <form id="form-site-settings" onsubmit="event.preventDefault(); saveSiteSettings();">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>ชื่อโรงเรียน (ภาษาไทย)</label>
+                                <input type="text" id="set-school-name-th" value="โรงเรียนวัดโป่งก้อนเส้า">
+                            </div>
+                            <div class="form-group">
+                                <label>ชื่อโรงเรียน (ภาษาอังกฤษ)</label>
+                                <input type="text" id="set-school-name-en" value="Watpongkonsao School">
+                            </div>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>สโลแกน / คำขวัญ</label>
+                                <input type="text" id="set-school-motto"
+                                    value="มุ่งสู่ความเป็นเลิศ พัฒนาผู้เรียนสู่อนาคต">
+                            </div>
+                            <div class="form-group">
+                                <label>ตัวย่อตราโรงเรียน</label>
+                                <input type="text" id="set-school-logo-abbr" value="ป.ก.ส.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>URL โลโก้โรงเรียน (ถ้ามี หรือวางลิงก์รูปภาพ)</label>
+                            <input type="text" id="set-school-logo-url" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label>ที่อยู่โรงเรียน</label>
+                            <input type="text" id="set-address"
+                                value="หมู่ 5 บ้านโป่งก้อนเส้า ตำบลท่ามะปราง อำเภอแก่งคอย จังหวัดสระบุรี">
+                        </div>
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label>เบอร์โทรศัพท์</label>
+                                <input type="text" id="set-phone" value="036-xxx-xxx">
+                            </div>
+                            <div class="form-group">
+                                <label>อีเมลติดต่อ</label>
+                                <input type="email" id="set-email" value="watpongkonsao@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label>เวลาทำการ</label>
+                                <input type="text" id="set-office-hours" value="จ.-ศ. 08.00–16.30 น.">
+                            </div>
+                        </div>
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label>ลิงก์ Facebook</label>
+                                <input type="text" id="set-facebook" placeholder="https://facebook.com/...">
+                            </div>
+                            <div class="form-group">
+                                <label>ลิงก์ YouTube</label>
+                                <input type="text" id="set-youtube" placeholder="https://youtube.com/...">
+                            </div>
+                            <div class="form-group">
+                                <label>ลิงก์ Instagram</label>
+                                <input type="text" id="set-instagram" placeholder="https://instagram.com/...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>ข้อความลิขสิทธิ์ท้ายเว็บไซต์ (Copyright)</label>
+                            <input type="text" id="set-copyright"
+                                value="© 2569 โรงเรียนวัดโป่งก้อนเส้า · พัฒนาโดย Khunjone V.1 · สงวนลิขสิทธิ์ทุกประการ">
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ── TAB 3: HERO BANNER ── -->
+            <section class="tab-pane" id="pane-hero" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>🖼️ ปรับแต่งแบนเนอร์หลัก (Hero Section)</h3>
+                        <button class="btn-gold" onclick="saveHeroBanner()">💾 บันทึกแบนเนอร์</button>
+                    </div>
+                    <form id="form-hero-banner" onsubmit="event.preventDefault(); saveHeroBanner();">
+                        <div class="form-group">
+                            <label>ข้อความป้ายต้อนรับ (Badge)</label>
+                            <input type="text" id="hero-in-badge" value="🏫 ยินดีต้อนรับสู่เว็บไซต์โรงเรียน">
+                        </div>
+                        <div class="form-group">
+                            <label>ข้อความหัวข้อหลัก (รองรับแท็ก &lt;br&gt; สำหรับตัดบรรทัด)</label>
+                            <input type="text" id="hero-in-title" value="ยินดีต้อนรับสู่<br>โรงเรียนวัดโป่งก้อนเส้า">
+                        </div>
+                        <div class="form-group">
+                            <label>คำโปรย / คำบรรยายสั้น</label>
+                            <input type="text" id="hero-in-subtitle"
+                                value="Watpongkonsao School · มุ่งสู่ความเป็นเลิศ พัฒนาผู้เรียนสู่อนาคต">
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>ปุ่มที่ 1 (ข้อความ)</label>
+                                <input type="text" id="hero-in-btn1-text" value="รู้จักเรา →">
+                            </div>
+                            <div class="form-group">
+                                <label>ปุ่มที่ 1 (ลิงก์ปลายทาง)</label>
+                                <input type="text" id="hero-in-btn1-link" value="#featured-section">
+                            </div>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>ปุ่มที่ 2 (ข้อความ)</label>
+                                <input type="text" id="hero-in-btn2-text" value="ติดต่อโรงเรียน">
+                            </div>
+                            <div class="form-group">
+                                <label>ปุ่มที่ 2 (ลิงก์ปลายทาง)</label>
+                                <input type="text" id="hero-in-btn2-link" value="#footer-contact-info">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ── TAB 4: STATISTICS ── -->
+            <section class="tab-pane" id="pane-stats" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>📈 จัดการตัวเลขสถิติ 4 ช่อง</h3>
+                        <button class="btn-gold" onclick="saveStats()">💾 บันทึกสถิติ</button>
+                    </div>
+                    <div class="form-grid-2" id="stats-inputs-container">
+                        <!-- กล่องแก้ไขสถิติ 4 กล่องจะถูกสร้างด้วย JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 5: QUICK ACCESS ── -->
+            <section class="tab-pane" id="pane-quick" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>⚡ บริการทางลัดด่วน (Quick Access 8 รายการ)</h3>
+                        <button class="btn-gold" onclick="saveQuickAccess()">💾 บันทึกทางลัด</button>
+                    </div>
+                    <div class="form-grid-2" id="quick-inputs-container">
+                        <!-- ปุ่มทางลัดจะถูกสร้างด้วย JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 6: NEWS ARTICLES ── -->
+            <section class="tab-pane" id="pane-news" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>📰 รายการข่าวสารและประกาศ</h3>
+                        <button class="btn-primary" onclick="openAddNewsModal()">➕ เพิ่มข่าวสารใหม่</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 120px;">วันที่</th>
+                                    <th>หัวข้อข่าวสาร</th>
+                                    <th style="width: 130px;">หมวดหมู่</th>
+                                    <th style="width: 80px;">ปักหมุด</th>
+                                    <th style="width: 80px;">ยอดวิว</th>
+                                    <th style="width: 100px; text-align: right;">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="news-table-body">
+                                <!-- รายการข่าวจะถูกสร้างด้วย JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 7: GALLERY ── -->
+            <section class="tab-pane" id="pane-gallery" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>📸 จัดการภาพกิจกรรม (Gallery)</h3>
+                        <button class="btn-primary" onclick="openAddGalleryModal()">➕ เพิ่มภาพกิจกรรมใหม่</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">รูปภาพ</th>
+                                    <th>คำบรรยายภาพ (Caption)</th>
+                                    <th style="width: 140px;">วันที่/ช่วงเวลา</th>
+                                    <th style="width: 100px; text-align: right;">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gallery-table-body">
+                                <!-- ภาพกิจกรรมจะถูกสร้างด้วย JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 8: STAFF DIRECTORY ── -->
+            <section class="tab-pane" id="pane-staff" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>👥 ทำเนียบผู้บริหารและบุคลากร</h3>
+                        <button class="btn-primary" onclick="openAddStaffModal()">➕ เพิ่มข้อมูลบุคลากร</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 70px;">รูปถ่าย</th>
+                                    <th>ชื่อ - นามสกุล</th>
+                                    <th>ตำแหน่งหน้าที่</th>
+                                    <th>ฝ่าย / กลุ่มสาระ</th>
+                                    <th style="width: 100px; text-align: right;">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staff-table-body">
+                                <!-- รายการบุคลากรจะถูกสร้างด้วย JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 9: CONTACT INQUIRIES ── -->
+            <section class="tab-pane" id="pane-contact" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>✉️ กล่องข้อความติดต่อจากผู้ปกครองและนักเรียน</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 140px;">วัน-เวลา</th>
+                                    <th style="width: 160px;">ชื่อผู้ติดต่อ</th>
+                                    <th>หัวข้อ</th>
+                                    <th>ข้อความ</th>
+                                    <th style="width: 120px;">เบอร์โทร/อีเมล</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contact-table-body">
+                                <!-- ข้อความติดต่อจะถูกสร้างด้วย JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 10: API & DATABASE SETTINGS ── -->
+            <section class="tab-pane" id="pane-api" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>⚙️ ตั้งค่าการเชื่อมต่อ Google Apps Script & Sheets</h3>
+                        <button class="btn-gold" onclick="saveApiUrl()">💾 บันทึก URL</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Google Apps Script Web App Exec URL:</label>
+                        <input type="text" id="input-api-url"
+                            placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+                        <small>นำ URL ที่ได้จากการกด Deploy ใน Google Apps Script (ดูใน backend/README_SETUP.md)
+                            มาวางที่นี่เพื่อเชื่อมต่อฐานข้อมูล Google Spreadsheet จริง</small>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 14px;">
+                        <button class="btn-primary" onclick="testApiConnection()">⚡ ทดสอบการเชื่อมต่อ API</button>
+                        <button class="btn-secondary" onclick="clearScriptCache()">🧹 ล้างแคช Script
+                            CacheService</button>
+                        <button class="btn-secondary" onclick="exportDataJson()">📥 ส่งออกสำรองข้อมูล (JSON
+                            Backup)</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 11: FACEBOOK SYNC SETTINGS ── -->
+            <section class="tab-pane" id="pane-facebook" style="display: none;">
+                <div class="admin-card">
+                    <div class="card-title-bar">
+                        <h3>🔄 ตั้งค่าระบบซิงค์ข้อมูลจาก Facebook อัตโนมัติ</h3>
+                        <button class="btn-gold" onclick="saveFacebookSettings()">💾 บันทึกการตั้งค่า Facebook</button>
+                    </div>
+                    <p style="font-size: 14px; line-height: 1.7; color: var(--gray-700); margin-bottom: 16px;">
+                        ระบบนี้จะดึงโพสต์จากเพจ Facebook ของโรงเรียนมาบันทึกเป็นข่าวประชาสัมพันธ์อัตโนมัติทุกๆ 1 ชั่วโมง
+                        คุณต้องสร้าง App ใน <a href="https://developers.facebook.com/" target="_blank"
+                            style="color:var(--gold-dark);font-weight:600;">Facebook Developers</a>
+                        แล้วนำ <strong>Page ID</strong> และ <strong>Page Access Token</strong> มากรอกที่นี่ครับ
+                    </p>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Facebook Page ID <span style="color:red">*</span></label>
+                            <input type="text" id="fb-page-id" placeholder="เช่น 123456789012345">
+                            <small>หมายเลข Page ID ของเพจ Facebook โรงเรียน</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Page Access Token <span style="color:red">*</span></label>
+                            <input type="text" id="fb-access-token" placeholder="EAAxxxxxxx...">
+                            <small>Long-lived Page Access Token ที่ได้จาก Facebook Developer</small>
+                        </div>
+                    </div>
+
+                    <div
+                        style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 16px; margin-top: 12px;">
+                        <div style="font-weight: 700; color: var(--navy); margin-bottom: 10px;">⏰ ระบบซิงค์อัตโนมัติ
+                            (Trigger ทุก 1 ชั่วโมง)</div>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <span>สถานะ:</span>
+                            <span id="fb-trigger-status" class="status-pill pill-offline">🔴 ยังไม่เปิดใช้งาน</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn-primary" onclick="enableFacebookTrigger()">▶️
+                                เปิดระบบซิงค์อัตโนมัติ</button>
+                            <button class="btn-secondary" onclick="disableFacebookTrigger()">⏹️
+                                ปิดระบบซิงค์อัตโนมัติ</button>
+                            <button class="btn-gold" onclick="forceSyncFacebook()">🔄 บังคับซิงค์ทันที (Force
+                                Sync)</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ── MODAL: เพิ่ม/แก้ไขข่าวสาร ── -->
+    <div class="modal-overlay" id="modal-add-news">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3 id="modal-news-heading">➕ เพิ่มข่าวสารประชาสัมพันธ์</h3>
+                <button class="modal-close-btn" onclick="closeModal('modal-add-news')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-news-modal" onsubmit="submitNewsForm(event)">
+                    <input type="hidden" id="news-edit-id">
+                    <div class="form-group">
+                        <label>หัวข้อข่าวสาร <span style="color:red">*</span></label>
+                        <input type="text" id="news-field-title" placeholder="เช่น กิจกรรมเปิดภาคเรียน..." required>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>หมวดหมู่ข่าว</label>
+                            <select id="news-field-category">
+                                <option value="ประชาสัมพันธ์">📢 ประชาสัมพันธ์</option>
+                                <option value="ข่าวกิจกรรม">🏆 ข่าวกิจกรรม</option>
+                                <option value="จัดซื้อจ้าง">🛒 จัดซื้อจ้าง</option>
+                                <option value="รับสมัครงาน">💼 รับสมัครงาน</option>
+                                <option value="ผลงานนักเรียน">📊 ผลงานนักเรียน</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>ภาพประกอบข่าว (เลือกได้หลายรูป สูงสุด 5 รูป)</label>
+                            <input type="file" id="news-field-file" accept="image/*" multiple>
+                            <small>รูปแรกจะถูกใช้เป็นภาพปกข่าว (Cover) โดยอัตโนมัติ</small>
+                        </div>
+                    </div>
+                    <div id="news-file-preview" style="display:none; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
+                    <div class="form-group">
+                        <label>เนื้อหาย่อ (แสดงในการ์ดหน้าแรก) <span style="color:red">*</span></label>
+                        <textarea id="news-field-excerpt" rows="2" placeholder="สรุปสั้นๆ 1-2 บรรทัด..."
+                            required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>เนื้อหาข่าวฉบับเต็ม</label>
+                        <textarea id="news-field-content" rows="4" placeholder="รายละเอียดข่าวทั้งหมด..."></textarea>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="news-field-pinned" style="width: auto;">
+                        <label for="news-field-pinned" style="margin-bottom: 0; cursor: pointer;">📌
+                            ปักหมุดเป็นข่าวสำคัญด้านบนสุด (Featured News)</label>
+                    </div>
+                    <div style="text-align: right; margin-top: 16px;">
+                        <button type="button" class="btn-secondary"
+                            onclick="closeModal('modal-add-news')">ยกเลิก</button>
+                        <button type="submit" class="btn-primary" id="btn-save-news">🚀 บันทึกและเผยแพร่ข่าว</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL: เพิ่มภาพกิจกรรม ── -->
+    <div class="modal-overlay" id="modal-add-gallery">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3>📸 เพิ่มภาพกิจกรรม (Gallery)</h3>
+                <button class="modal-close-btn" onclick="closeModal('modal-add-gallery')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-gallery-modal" onsubmit="submitGalleryForm(event)">
+                    <div class="form-group">
+                        <label>คำบรรยายภาพ (Caption) <span style="color:red">*</span></label>
+                        <input type="text" id="gal-field-caption" placeholder="เช่น กิจกรรมวันวิทยาศาสตร์ 2569"
+                            required>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>ช่วงเวลา / วันที่จัดกิจกรรม</label>
+                            <input type="text" id="gal-field-date" placeholder="เช่น สิงหาคม 2569">
+                        </div>
+                        <div class="form-group">
+                            <label>เลือกรูปภาพ (อัปโหลดเข้า Drive) <span style="color:red">*</span></label>
+                            <input type="file" id="gal-field-file" accept="image/*" required>
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 16px;">
+                        <button type="button" class="btn-secondary"
+                            onclick="closeModal('modal-add-gallery')">ยกเลิก</button>
+                        <button type="submit" class="btn-primary" id="btn-save-gallery">🚀 บันทึกภาพกิจกรรม</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL: เพิ่มบุคลากร ── -->
+    <div class="modal-overlay" id="modal-add-staff">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3>👥 เพิ่มข้อมูลบุคลากรครู</h3>
+                <button class="modal-close-btn" onclick="closeModal('modal-add-staff')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-staff-modal" onsubmit="submitStaffForm(event)">
+                    <div class="form-group">
+                        <label>ชื่อ - นามสกุล <span style="color:red">*</span></label>
+                        <input type="text" id="staff-field-name" placeholder="เช่น นายสมหมาย ใจมั่น" required>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>ตำแหน่งหน้าที่ <span style="color:red">*</span></label>
+                            <input type="text" id="staff-field-role" placeholder="เช่น ผู้อำนวยการ, ครูประจำชั้น"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>ฝ่าย / กลุ่มสาระ</label>
+                            <input type="text" id="staff-field-dept" placeholder="เช่น ฝ่ายบริหาร, กลุ่มสาระคณิตศาสตร์">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>รูปถ่ายบุคลากร (อัปโหลดเข้า Drive)</label>
+                        <input type="file" id="staff-field-file" accept="image/*">
+                    </div>
+                    <div style="text-align: right; margin-top: 16px;">
+                        <button type="button" class="btn-secondary"
+                            onclick="closeModal('modal-add-staff')">ยกเลิก</button>
+                        <button type="submit" class="btn-primary" id="btn-save-staff">🚀 บันทึกข้อมูลบุคลากร</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
